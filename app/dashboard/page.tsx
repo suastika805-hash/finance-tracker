@@ -129,20 +129,20 @@ export default function DashboardPage() {
   )
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+    <main className="min-h-screen min-h-[100dvh] bg-gray-50 dark:bg-gray-900 transition-colors pb-16 sm:pb-0">
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-20 shadow-sm">
-        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+        <div className="max-w-2xl lg:max-w-3xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between gap-2">
           <div className="min-w-0">
             <h1 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">💸 CatatUang</h1>
-            <p className="text-xs text-gray-400 dark:text-gray-500 truncate max-w-[120px] sm:max-w-xs">{userEmail}</p>
+            <p className="text-[11px] sm:text-xs text-gray-400 dark:text-gray-500 truncate max-w-[140px] sm:max-w-xs">{userEmail}</p>
           </div>
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <NotificationBell userId={userId} saldo={summary.saldo} />
             <DarkModeToggle />
             <button
               onClick={() => { setShowForm(!showForm); setEditData(null) }}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+              className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-3 sm:px-4 py-2 rounded-xl text-sm font-medium transition-colors"
             >
               {showForm && !editData ? '✕' : '＋'}
               <span className="hidden sm:inline ml-1">{showForm && !editData ? 'Tutup' : 'Tambah'}</span>
@@ -157,7 +157,7 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <div className="max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4">
+      <div className="max-w-2xl lg:max-w-3xl mx-auto px-3 sm:px-4 py-3 sm:py-6 space-y-3 sm:space-y-4">
         {/* Summary */}
         <SummaryCard summary={summary} loading={loading} />
 
@@ -171,16 +171,16 @@ export default function DashboardPage() {
           />
         )}
 
-        <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-2xl p-1 overflow-x-auto scrollbar-hide">
+        <div className="flex gap-0.5 sm:gap-1 bg-gray-100 dark:bg-gray-800 rounded-2xl p-1 overflow-x-auto scrollbar-hide">
           {TABS.map(tab => (
             <button key={tab.key} onClick={() => setActiveTab(tab.key as 'transaksi' | 'grafik' | 'budget' | 'wishlist' | 'kategori' | 'laporan')}
-              className={`flex-1 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-sm font-medium transition-all flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-2 px-1 sm:px-3 min-w-max sm:min-w-0 ${
+              className={`flex-1 py-1.5 sm:py-2.5 rounded-xl text-[10px] sm:text-sm font-medium transition-all flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-2 px-0.5 sm:px-3 min-w-0 ${
                 activeTab === tab.key
                   ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 active:bg-gray-200 dark:active:bg-gray-600'
               }`}>
               {tab.icon}
-              <span className="mt-0.5 sm:mt-0">{tab.label}</span>
+              <span className="mt-0.5 sm:mt-0 leading-tight">{tab.label}</span>
             </button>
           ))}
         </div>
@@ -265,16 +265,17 @@ export default function DashboardPage() {
         )}
 
         {/* Footer spacing for mobile */}
-        <div className="h-4" />
+        <div className="h-4 sm:h-6" />
       </div>
 
       {/* Mobile logout button */}
-      <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 px-4 py-3 flex justify-center">
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-t border-gray-100 dark:border-gray-700 px-4 py-2.5 flex justify-center safe-bottom z-20">
         <button
           onClick={handleLogout}
-          className="text-sm text-gray-500 dark:text-gray-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors flex items-center gap-1.5"
+          className="text-sm text-gray-500 dark:text-gray-400 hover:text-rose-500 dark:hover:text-rose-400 active:text-rose-600 transition-colors flex items-center gap-1.5"
         >
-          <span>🚪</span> Keluar dari akun
+          <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" /></svg>
+          Keluar dari akun
         </button>
       </div>
     </main>
