@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #f9fafb;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+.dark body {
+  background-color: #111827;
+}
+
+/* Better mobile input zoom prevention */
+@media (max-width: 640px) {
+  input[type="text"],
+  input[type="number"],
+  input[type="date"],
+  input[type="month"],
+  input[type="email"],
+  input[type="password"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Smooth scrollbar for webkit */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #374151;
+}

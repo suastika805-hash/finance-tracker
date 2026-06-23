@@ -1,0 +1,21 @@
+finance-tracker/
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── globals.css
+│   └── api/
+│       └── transactions/
+│           ├── route.ts
+│           └── [id]/
+│               └── route.ts
+├── components/
+│   ├── TransactionForm.tsx
+│   ├── TransactionList.tsx
+│   ├── SummaryCard.tsx
+│   └── CategoryChart.tsx
+├── lib/
+│   ├── supabase.ts
+│   └── types.ts
+├── supabase/
+│   └── schema.sql
+└── .env.local.example
