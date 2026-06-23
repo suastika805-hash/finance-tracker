@@ -24,6 +24,8 @@ export default function ReportSection({ userId }: { userId: string }) {
 
     const yearly: Record<string, { pemasukan: number; pengeluaran: number }> = {}
     const monthly: Record<string, { pemasukan: number; pengeluaran: number }> = {}
+    const weekly: Record<string, { pemasukan: number; pengeluaran: number }> = {}
+    const daily: Record<string, { pemasukan: number; pengeluaran: number }> = {}
 
     transactions.forEach(t => {
       const isPemasukan = t.type === 'pemasukan'
@@ -35,6 +37,13 @@ export default function ReportSection({ userId }: { userId: string }) {
 
       const year = t.date.substring(0, 4)
       const month = t.date.substring(0, 7) // YYYY-MM
+      const day = t.date // YYYY-MM-DD
+      
+      const dateObj = new Date(t.date)
+      const dayOfWeek = dateObj.getDay() || 7 // 1-7 (Mon-Sun)
+      const weekStart = new Date(dateObj)
+      weekStart.setDate(dateObj.getDate() - dayOfWeek + 1)
+      const weekKey = weekStart.toISOString().substring(0, 10)
 
       // Yearly
       if (!yearly[year]) yearly[year] = { pemasukan: 0, pengeluaran: 0 }
@@ -45,6 +54,16 @@ export default function ReportSection({ userId }: { userId: string }) {
       if (!monthly[month]) monthly[month] = { pemasukan: 0, pengeluaran: 0 }
       if (isPemasukan) monthly[month].pemasukan += amount
       else monthly[month].pengeluaran += amount
+
+      // Weekly
+      if (!weekly[weekKey]) weekly[weekKey] = { pemasukan: 0, pengeluaran: 0 }
+      if (isPemasukan) weekly[weekKey].pemasukan += amount
+      else weekly[weekKey].pengeluaran += amount
+
+      // Daily
+      if (!daily[day]) daily[day] = { pemasukan: 0, pengeluaran: 0 }
+      if (isPemasukan) daily[day].pemasukan += amount
+      else daily[day].pengeluaran += amount
     })
 
     const saldo = totalPemasukan - totalPengeluaran
@@ -67,7 +86,31 @@ export default function ReportSection({ userId }: { userId: string }) {
       }
     })
 
-    return { totalPemasukan, totalPengeluaran, saldo, yearly: yearlyArray, monthly: monthlyArray }
+    const weeklyArray = Object.keys(weekly).sort((a, b) => b.localeCompare(a)).map(week => {
+      const start = new Date(week)
+      const end = new Date(start)
+      end.setDate(start.getDate() + 6)
+      const weekLabel = `${start.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })} - ${end.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}`
+      return {
+        weekRaw: week,
+        weekLabel,
+        ...weekly[week],
+        saldo: weekly[week].pemasukan - weekly[week].pengeluaran
+      }
+    })
+
+    const dailyArray = Object.keys(daily).sort((a, b) => b.localeCompare(a)).map(day => {
+      const dateObj = new Date(day)
+      const dayLabel = dateObj.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })
+      return {
+        dayRaw: day,
+        dayLabel,
+        ...daily[day],
+        saldo: daily[day].pemasukan - daily[day].pengeluaran
+      }
+    })
+
+    return { totalPemasukan, totalPengeluaran, saldo, yearly: yearlyArray, monthly: monthlyArray, weekly: weeklyArray, daily: dailyArray }
   }, [transactions])
 
   if (loading) {
@@ -171,6 +214,102 @@ export default function ReportSection({ userId }: { userId: string }) {
                     <tr key={item.monthRaw} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex flex-col sm:table-row p-4 sm:p-0">
                       <td className="px-0 sm:px-4 py-2 sm:py-4 font-medium text-gray-900 dark:text-white mb-2 sm:mb-0">
                         {item.monthLabel}
+                      </td>
+                      <td className="px-0 sm:px-4 py-1 sm:py-4 sm:text-right flex justify-between sm:table-cell">
+                        <span className="sm:hidden text-gray-500">Pemasukan</span>
+                        <span className="text-green-600 dark:text-green-400 font-medium">{formatCurrency(item.pemasukan)}</span>
+                      </td>
+                      <td className="px-0 sm:px-4 py-1 sm:py-4 sm:text-right flex justify-between sm:table-cell">
+                        <span className="sm:hidden text-gray-500">Pengeluaran</span>
+                        <span className="text-rose-600 dark:text-rose-400 font-medium">{formatCurrency(item.pengeluaran)}</span>
+                      </td>
+                      <td className="px-0 sm:px-4 py-2 sm:py-4 sm:text-right flex justify-between sm:table-cell mt-2 sm:mt-0 pt-2 sm:pt-4 border-t border-gray-100 dark:border-gray-800 sm:border-0">
+                        <span className="sm:hidden text-gray-700 font-medium">Saldo</span>
+                        <span className={`font-bold ${item.saldo >= 0 ? 'text-gray-900 dark:text-white' : 'text-rose-600 dark:text-rose-400'}`}>
+                          {formatCurrency(item.saldo)}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Weekly Report */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+        <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+          <h3 className="font-bold text-gray-800 dark:text-gray-100">📅 Laporan Mingguan</h3>
+        </div>
+        <div className="p-0 sm:p-5">
+          {reportData.weekly.length === 0 ? (
+            <p className="text-gray-500 text-sm text-center p-5">Belum ada data.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 uppercase border-b border-gray-200 dark:border-gray-700 hidden sm:table-header-group">
+                  <tr>
+                    <th className="px-4 py-3">Minggu</th>
+                    <th className="px-4 py-3 text-right">Pemasukan</th>
+                    <th className="px-4 py-3 text-right">Pengeluaran</th>
+                    <th className="px-4 py-3 text-right">Saldo</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                  {reportData.weekly.map((item) => (
+                    <tr key={item.weekRaw} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex flex-col sm:table-row p-4 sm:p-0">
+                      <td className="px-0 sm:px-4 py-2 sm:py-4 font-medium text-gray-900 dark:text-white mb-2 sm:mb-0 whitespace-nowrap">
+                        {item.weekLabel}
+                      </td>
+                      <td className="px-0 sm:px-4 py-1 sm:py-4 sm:text-right flex justify-between sm:table-cell">
+                        <span className="sm:hidden text-gray-500">Pemasukan</span>
+                        <span className="text-green-600 dark:text-green-400 font-medium">{formatCurrency(item.pemasukan)}</span>
+                      </td>
+                      <td className="px-0 sm:px-4 py-1 sm:py-4 sm:text-right flex justify-between sm:table-cell">
+                        <span className="sm:hidden text-gray-500">Pengeluaran</span>
+                        <span className="text-rose-600 dark:text-rose-400 font-medium">{formatCurrency(item.pengeluaran)}</span>
+                      </td>
+                      <td className="px-0 sm:px-4 py-2 sm:py-4 sm:text-right flex justify-between sm:table-cell mt-2 sm:mt-0 pt-2 sm:pt-4 border-t border-gray-100 dark:border-gray-800 sm:border-0">
+                        <span className="sm:hidden text-gray-700 font-medium">Saldo</span>
+                        <span className={`font-bold ${item.saldo >= 0 ? 'text-gray-900 dark:text-white' : 'text-rose-600 dark:text-rose-400'}`}>
+                          {formatCurrency(item.saldo)}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Daily Report */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+        <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+          <h3 className="font-bold text-gray-800 dark:text-gray-100">☀️ Laporan Harian</h3>
+        </div>
+        <div className="p-0 sm:p-5">
+          {reportData.daily.length === 0 ? (
+            <p className="text-gray-500 text-sm text-center p-5">Belum ada data.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 uppercase border-b border-gray-200 dark:border-gray-700 hidden sm:table-header-group">
+                  <tr>
+                    <th className="px-4 py-3">Tanggal</th>
+                    <th className="px-4 py-3 text-right">Pemasukan</th>
+                    <th className="px-4 py-3 text-right">Pengeluaran</th>
+                    <th className="px-4 py-3 text-right">Saldo</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                  {reportData.daily.map((item) => (
+                    <tr key={item.dayRaw} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex flex-col sm:table-row p-4 sm:p-0">
+                      <td className="px-0 sm:px-4 py-2 sm:py-4 font-medium text-gray-900 dark:text-white mb-2 sm:mb-0 whitespace-nowrap">
+                        {item.dayLabel}
                       </td>
                       <td className="px-0 sm:px-4 py-1 sm:py-4 sm:text-right flex justify-between sm:table-cell">
                         <span className="sm:hidden text-gray-500">Pemasukan</span>
