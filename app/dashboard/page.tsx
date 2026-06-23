@@ -14,6 +14,7 @@ import DarkModeToggle from '@/components/DarkModeToggle'
 import CategoryManager from '@/components/CategoryManager'
 import WishlistSection from '@/components/WishlistSection'
 import ReportSection from '@/components/ReportSection'
+import NotificationBell from '@/components/NotificationBell'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -137,6 +138,7 @@ export default function DashboardPage() {
             <p className="text-xs text-gray-400 dark:text-gray-500 truncate max-w-[120px] sm:max-w-xs">{userEmail}</p>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <NotificationBell userId={userId} saldo={summary.saldo} />
             <DarkModeToggle />
             <button
               onClick={() => { setShowForm(!showForm); setEditData(null) }}
