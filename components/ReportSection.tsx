@@ -151,69 +151,30 @@ export default function ReportSection({ userId }: { userId: string }) {
         </div>
       </div>
 
-      {/* Yearly Report */}
+      {/* Daily Report */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
-          <h3 className="font-bold text-gray-800 dark:text-gray-100">📅 Laporan Tahunan</h3>
-        </div>
-        <div className="p-5">
-          {reportData.yearly.length === 0 ? (
-            <p className="text-gray-500 text-sm text-center">Belum ada data.</p>
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {reportData.yearly.map((item) => (
-                <div key={item.year} className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 border border-gray-100 dark:border-gray-700/50">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="font-bold text-lg text-gray-800 dark:text-gray-200">{item.year}</span>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${item.saldo >= 0 ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400' : 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-400'}`}>
-                      {item.saldo >= 0 ? 'Surplus' : 'Defisit'}
-                    </span>
-                  </div>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-500 dark:text-gray-400">Pemasukan</span>
-                      <span className="font-medium text-green-600 dark:text-green-400">{formatCurrency(item.pemasukan)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500 dark:text-gray-400">Pengeluaran</span>
-                      <span className="font-medium text-rose-600 dark:text-rose-400">{formatCurrency(item.pengeluaran)}</span>
-                    </div>
-                    <div className="pt-2 border-t border-gray-200 dark:border-gray-700 flex justify-between">
-                      <span className="font-medium text-gray-700 dark:text-gray-300">Sisa / Saldo</span>
-                      <span className="font-bold text-gray-900 dark:text-white">{formatCurrency(item.saldo)}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Monthly Report */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
-        <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
-          <h3 className="font-bold text-gray-800 dark:text-gray-100">📆 Laporan Bulanan</h3>
+          <h3 className="font-bold text-gray-800 dark:text-gray-100">☀️ Laporan Harian</h3>
         </div>
         <div className="p-0 sm:p-5">
-          {reportData.monthly.length === 0 ? (
+          {reportData.daily.length === 0 ? (
             <p className="text-gray-500 text-sm text-center p-5">Belum ada data.</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
                 <thead className="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 uppercase border-b border-gray-200 dark:border-gray-700 hidden sm:table-header-group">
                   <tr>
-                    <th className="px-4 py-3">Bulan</th>
+                    <th className="px-4 py-3">Tanggal</th>
                     <th className="px-4 py-3 text-right">Pemasukan</th>
                     <th className="px-4 py-3 text-right">Pengeluaran</th>
                     <th className="px-4 py-3 text-right">Saldo</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                  {reportData.monthly.map((item) => (
-                    <tr key={item.monthRaw} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex flex-col sm:table-row p-4 sm:p-0">
-                      <td className="px-0 sm:px-4 py-2 sm:py-4 font-medium text-gray-900 dark:text-white mb-2 sm:mb-0">
-                        {item.monthLabel}
+                  {reportData.daily.map((item) => (
+                    <tr key={item.dayRaw} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex flex-col sm:table-row p-4 sm:p-0">
+                      <td className="px-0 sm:px-4 py-2 sm:py-4 font-medium text-gray-900 dark:text-white mb-2 sm:mb-0 whitespace-nowrap">
+                        {item.dayLabel}
                       </td>
                       <td className="px-0 sm:px-4 py-1 sm:py-4 sm:text-right flex justify-between sm:table-cell">
                         <span className="sm:hidden text-gray-500">Pemasukan</span>
@@ -286,30 +247,30 @@ export default function ReportSection({ userId }: { userId: string }) {
         </div>
       </div>
 
-      {/* Daily Report */}
+      {/* Monthly Report */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
-          <h3 className="font-bold text-gray-800 dark:text-gray-100">☀️ Laporan Harian</h3>
+          <h3 className="font-bold text-gray-800 dark:text-gray-100">📆 Laporan Bulanan</h3>
         </div>
         <div className="p-0 sm:p-5">
-          {reportData.daily.length === 0 ? (
+          {reportData.monthly.length === 0 ? (
             <p className="text-gray-500 text-sm text-center p-5">Belum ada data.</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
                 <thead className="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 uppercase border-b border-gray-200 dark:border-gray-700 hidden sm:table-header-group">
                   <tr>
-                    <th className="px-4 py-3">Tanggal</th>
+                    <th className="px-4 py-3">Bulan</th>
                     <th className="px-4 py-3 text-right">Pemasukan</th>
                     <th className="px-4 py-3 text-right">Pengeluaran</th>
                     <th className="px-4 py-3 text-right">Saldo</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                  {reportData.daily.map((item) => (
-                    <tr key={item.dayRaw} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex flex-col sm:table-row p-4 sm:p-0">
-                      <td className="px-0 sm:px-4 py-2 sm:py-4 font-medium text-gray-900 dark:text-white mb-2 sm:mb-0 whitespace-nowrap">
-                        {item.dayLabel}
+                  {reportData.monthly.map((item) => (
+                    <tr key={item.monthRaw} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex flex-col sm:table-row p-4 sm:p-0">
+                      <td className="px-0 sm:px-4 py-2 sm:py-4 font-medium text-gray-900 dark:text-white mb-2 sm:mb-0">
+                        {item.monthLabel}
                       </td>
                       <td className="px-0 sm:px-4 py-1 sm:py-4 sm:text-right flex justify-between sm:table-cell">
                         <span className="sm:hidden text-gray-500">Pemasukan</span>
@@ -329,6 +290,45 @@ export default function ReportSection({ userId }: { userId: string }) {
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Yearly Report */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
+        <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+          <h3 className="font-bold text-gray-800 dark:text-gray-100">📅 Laporan Tahunan</h3>
+        </div>
+        <div className="p-5">
+          {reportData.yearly.length === 0 ? (
+            <p className="text-gray-500 text-sm text-center">Belum ada data.</p>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2">
+              {reportData.yearly.map((item) => (
+                <div key={item.year} className="bg-gray-50 dark:bg-gray-900/50 rounded-xl p-4 border border-gray-100 dark:border-gray-700/50">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="font-bold text-lg text-gray-800 dark:text-gray-200">{item.year}</span>
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${item.saldo >= 0 ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400' : 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-400'}`}>
+                      {item.saldo >= 0 ? 'Surplus' : 'Defisit'}
+                    </span>
+                  </div>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-500 dark:text-gray-400">Pemasukan</span>
+                      <span className="font-medium text-green-600 dark:text-green-400">{formatCurrency(item.pemasukan)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-500 dark:text-gray-400">Pengeluaran</span>
+                      <span className="font-medium text-rose-600 dark:text-rose-400">{formatCurrency(item.pengeluaran)}</span>
+                    </div>
+                    <div className="pt-2 border-t border-gray-200 dark:border-gray-700 flex justify-between">
+                      <span className="font-medium text-gray-700 dark:text-gray-300">Sisa / Saldo</span>
+                      <span className="font-bold text-gray-900 dark:text-white">{formatCurrency(item.saldo)}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
