@@ -171,7 +171,7 @@ export default function DashboardPage() {
 
         <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-2xl p-1 overflow-x-auto scrollbar-hide">
           {TABS.map(tab => (
-            <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+            <button key={tab.key} onClick={() => setActiveTab(tab.key as 'transaksi' | 'grafik' | 'budget' | 'wishlist' | 'kategori' | 'laporan')}
               className={`flex-1 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-sm font-medium transition-all flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-2 px-1 sm:px-3 min-w-max sm:min-w-0 ${
                 activeTab === tab.key
                   ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
