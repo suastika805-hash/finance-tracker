@@ -76,9 +76,12 @@ export default function BudgetSection({ userId, month }: Props) {
             </div>
             <div className="flex-1">
               <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Limit (Rp)</label>
-              <input type="number" min="1" required value={form.limit_amount || ''}
-                onChange={e => setForm(f => ({ ...f, limit_amount: Number(e.target.value) }))}
-                placeholder="500000"
+              <input type="text" inputMode="numeric" required value={form.limit_amount ? form.limit_amount.toLocaleString('id-ID') : ''}
+                onChange={e => {
+                  const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                  setForm(f => ({ ...f, limit_amount: rawValue ? Number(rawValue) : 0 }))
+                }}
+                placeholder="Contoh: 500.000"
                 className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white dark:bg-gray-800 dark:text-white dark:placeholder-gray-500"
               />
             </div>

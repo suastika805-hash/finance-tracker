@@ -82,9 +82,12 @@ export default function TransactionForm({ editData, userId, onSuccess, onCancel 
         {/* Nominal */}
         <div>
           <label className="block text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 mb-1.5">Nominal (Rp)</label>
-          <input type="number" min="1" required value={form.amount || ''}
-            onChange={e => setForm(f => ({ ...f, amount: Number(e.target.value) }))}
-            placeholder="Contoh: 500000"
+          <input type="text" inputMode="numeric" required value={form.amount ? form.amount.toLocaleString('id-ID') : ''}
+            onChange={e => {
+              const rawValue = e.target.value.replace(/[^0-9]/g, '');
+              setForm(f => ({ ...f, amount: rawValue ? Number(rawValue) : 0 }))
+            }}
+            placeholder="Contoh: 500.000"
             className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
           />
         </div>

@@ -161,9 +161,12 @@ export default function WishlistSection({ userId, currentBalance, onSuccess }: P
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1">
                 <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Estimasi Harga (Rp)</label>
-                <input type="number" min="1" required value={form.price || ''}
-                  onChange={e => setForm(f => ({ ...f, price: Number(e.target.value) }))}
-                  placeholder="500000"
+                <input type="text" inputMode="numeric" required value={form.price ? form.price.toLocaleString('id-ID') : ''}
+                  onChange={e => {
+                    const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                    setForm(f => ({ ...f, price: rawValue ? Number(rawValue) : 0 }))
+                  }}
+                  placeholder="Contoh: 500.000"
                   className="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white dark:bg-gray-800 dark:text-white"
                 />
               </div>
